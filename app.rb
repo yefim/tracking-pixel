@@ -1,16 +1,22 @@
 require 'sinatra'
 require 'redis'
 
-get '/pixel.png' do
-  redis.incr('count')
+get '/:key/pixel.png' do
+  redis.incr("count-#{params['key']}")
   redis.close
   send_file 'pixel.png', type: :png
 end
 
-get '/count' do
-  count = redis.get('count')
+get '/:key/count' do
+  count = redis.get("count-#{params['key']}")
   redis.close
   count
+end
+
+get '/:key/clear' do
+  redis.del("count-#{params['key']}")
+  redis.close
+  return
 end
 
 def redis
