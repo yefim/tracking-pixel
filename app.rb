@@ -3,11 +3,14 @@ require 'redis'
 
 get '/pixel.png' do
   redis.incr('count')
-  send_file 'pixel.png', :type => :png
+  redis.close
+  send_file 'pixel.png', type: :png
 end
 
 get '/count' do
-  redis.get('count')
+  count = redis.get('count')
+  redis.close
+  count
 end
 
 def redis
